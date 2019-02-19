@@ -13,9 +13,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const express = __importStar(require("express"));
+const cors = __importStar(require("cors"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const imageRoutes_1 = __importDefault(require("./routes/imageRoutes"));
 const app = express.default();
+// Enable CORS
+app.use(cors.default());
 // Configure body parser
 app.use(body_parser_1.default.urlencoded({ extended: true }));
 app.use(body_parser_1.default.json());
@@ -35,11 +38,11 @@ if (environment === 'production') {
 const clientDir = __dirname + '/client/';
 app.use(express.static(clientDir));
 // Enable CORS
-app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    next();
-});
+// app.use((req, res, next) => {
+//   res.header("Access-Control-Allow-Origin", "*");
+//   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+//   next();
+// });
 // Add routes for image upload
 imageRoutes_1.default(app);
 const server = app.listen(process.env.PORT || 4300, () => {
