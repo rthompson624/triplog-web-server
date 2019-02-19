@@ -3,8 +3,7 @@ import * as multer from 'multer';
 import * as multerS3 from 'multer-s3';
 import * as aws from 'aws-sdk';
 
-
-export default function imageRoutes(app: express.Application) {
+export default function imageRoutes(app: express.Application): void {
   app.route('/image-upload/:userId').post((req, res) => {
     aws.config.update({
       accessKeyId: process.env.AWS_KEY_ID,
@@ -13,6 +12,7 @@ export default function imageRoutes(app: express.Application) {
     });
     const bucket = <string>process.env.AWS_BUCKET;
     const s3 = new aws.S3();
+    const pathPrefix = 'users';
     const userId = req.params.userId;
     const upload = multer.default({
       storage: multerS3.default({
@@ -20,7 +20,7 @@ export default function imageRoutes(app: express.Application) {
         bucket: bucket,
         acl: 'public-read',
         key: function (req, file, cb) {
-          cb(null, userId + '/' + Date.now().toString() + '.' + getFileExtension(file.originalname));
+          cb(null, pathPrefix + '/' + userId + '/' + Date.now().toString() + '.' + getFileExtension(file.originalname));
         }
       })
     });
@@ -31,7 +31,8 @@ export default function imageRoutes(app: express.Application) {
         return res.status(422).json({'error': {'type': 'Image Upload Error', 'message': err.message}});
       }
       const s3file: any = req.file; // TS type checking issue
-      const fileName = s3file.key.split('/')[1];
+      const pathParts = s3file.key.split('/');
+      const fileName = pathParts[pathParts.length - 1];
       return res.status(200).json({'userId': userId, 'file': fileName, 'url': s3file.location});
     });
   });
