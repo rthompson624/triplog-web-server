@@ -37,12 +37,6 @@ if (environment === 'production') {
 // Create default route to serve client app
 const clientDir = __dirname + '/client/';
 app.use(express.static(clientDir));
-// Enable CORS
-// app.use((req, res, next) => {
-//   res.header("Access-Control-Allow-Origin", "*");
-//   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-//   next();
-// });
 // Add routes for image upload
 imageRoutes_1.default(app);
 const server = app.listen(process.env.PORT || 4300, () => {

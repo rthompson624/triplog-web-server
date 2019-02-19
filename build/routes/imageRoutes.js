@@ -19,6 +19,7 @@ function imageRoutes(app) {
         });
         const bucket = process.env.AWS_BUCKET;
         const s3 = new aws.S3();
+        const pathPrefix = 'users';
         const userId = req.params.userId;
         const upload = multer.default({
             storage: multerS3.default({
@@ -26,7 +27,7 @@ function imageRoutes(app) {
                 bucket: bucket,
                 acl: 'public-read',
                 key: function (req, file, cb) {
-                    cb(null, userId + '/' + Date.now().toString() + '.' + getFileExtension(file.originalname));
+                    cb(null, pathPrefix + '/' + userId + '/' + Date.now().toString() + '.' + getFileExtension(file.originalname));
                 }
             })
         });
@@ -37,7 +38,8 @@ function imageRoutes(app) {
                 return res.status(422).json({ 'error': { 'type': 'Image Upload Error', 'message': err.message } });
             }
             const s3file = req.file; // TS type checking issue
-            const fileName = s3file.key.split('/')[1];
+            const pathParts = s3file.key.split('/');
+            const fileName = pathParts[pathParts.length - 1];
             return res.status(200).json({ 'userId': userId, 'file': fileName, 'url': s3file.location });
         });
     });
