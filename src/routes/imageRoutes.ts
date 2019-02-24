@@ -12,6 +12,7 @@ export default function imageRoutes(app: express.Application): void {
     });
     const bucket = <string>process.env.AWS_BUCKET;
     const s3 = new aws.S3();
+    const environment = process.env.NODE_ENV;
     const pathPrefix = 'users';
     const userId = req.params.userId;
     const upload = multer.default({
@@ -20,7 +21,7 @@ export default function imageRoutes(app: express.Application): void {
         bucket: bucket,
         acl: 'public-read',
         key: function (req, file, cb) {
-          cb(null, pathPrefix + '/' + userId + '/' + Date.now().toString() + '.' + getFileExtension(file.originalname));
+          cb(null, environment + '/' + pathPrefix + '/' + userId + '/' + Date.now().toString() + '.' + getFileExtension(file.originalname));
         }
       })
     });
