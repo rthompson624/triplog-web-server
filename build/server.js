@@ -47,6 +47,10 @@ app.use(express.static(clientDir));
 // Add routes
 imageRoutes_1.default(app);
 configRoutes_1.default(app);
+// Return index.html for all other routes (client is SPA)
+app.get('/*', function (req, res) {
+    res.sendFile(__dirname + '/client/index.html');
+});
 // Start web server
 let port;
 if (process.env.NODE_ENV === 'staging' || process.env.NODE_ENV === 'production') {
