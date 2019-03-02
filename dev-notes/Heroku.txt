@@ -1,3 +1,7 @@
+Staging
 https://warm-brushlands-57387.herokuapp.com/
-
 https://git.heroku.com/warm-brushlands-57387.git
+
+Production
+https://aqueous-savannah-64639.herokuapp.com/
+https://git.heroku.com/aqueous-savannah-64639.git
